@@ -47,14 +47,15 @@ Route::get('/produtos', function () {
 
 Route::get('/categoriasprodutos', function () {
     $cats = Categoria::all();
-    if(count($cats) === 0)
+    if(count($cats) === 0){
         echo '<h4>Você não possui nenhuma categoria cadastrada</h4>';
+    }
     else {
         foreach($cats as $c) {
             echo '<p>'. $c->id . '-' . $c->nome .'</p>';
             $produtos = $c->produtos; // captura os produtos que pertencem a categoria
 
-                if(is_array($produtos) && count($produtos) > 0) {
+                if(count($produtos) > 0) {
                     echo '<ul>';
                     foreach ($produtos as $p) {
                         echo '<li>' . $p->nome . '</li>';
@@ -64,4 +65,13 @@ Route::get('/categoriasprodutos', function () {
         }
 
     }
+});
+
+    // O with() é usado para carregar no modo Eager Loading,
+    // trazendo os relacionamentos junto com as categorias
+Route::get('/categoriasprodutos/json', function() {
+    $cats = Categoria::with('produtos')->get();
+    return $cats->toJson();
+
+
 });
